@@ -1,1 +1,1 @@
-# restaurant-score-appication
+# restaurant-score-application
