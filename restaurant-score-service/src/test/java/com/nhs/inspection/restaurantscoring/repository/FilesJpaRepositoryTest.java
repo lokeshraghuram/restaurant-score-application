@@ -12,6 +12,4 @@ class FilesJpaRepositoryTest {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private FilesJpaRepository filesJpaRepository;
 }
