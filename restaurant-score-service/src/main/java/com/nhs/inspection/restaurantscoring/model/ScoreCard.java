@@ -2,21 +2,23 @@ package com.nhs.inspection.restaurantscoring.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ScoreCard implements Serializable {
-    private String business_id;
-    private String business_name;
-    private String business_address;
-    private String business_city;
-    private String business_state;
-    private String business_postal_code;
-    private Double business_latitude;
-    private Double business_longitude;
-    private String business_phone_number;
-    private List<Inspection> inspections;
+    @NotNull
+    protected String business_id;
+    protected String business_name;
+    protected String business_address;
+    protected String business_city;
+    protected String business_state;
+    protected String business_postal_code;
+    protected Double business_latitude;
+    protected Double business_longitude;
+    protected String business_phone_number;
+    protected List<Inspection> inspections;
 
     public ScoreCard() {
     }
@@ -99,5 +101,21 @@ public class ScoreCard implements Serializable {
 
     public void setInspectionList(List<Inspection> inspections) {
         this.inspections = inspections;
+    }
+
+    @Override
+    public String toString() {
+        return "ScoreCard{" +
+                "business_id='" + business_id + '\'' +
+                ", business_name='" + business_name + '\'' +
+                ", business_address='" + business_address + '\'' +
+                ", business_city='" + business_city + '\'' +
+                ", business_state='" + business_state + '\'' +
+                ", business_postal_code='" + business_postal_code + '\'' +
+                ", business_latitude=" + business_latitude +
+                ", business_longitude=" + business_longitude +
+                ", business_phone_number='" + business_phone_number + '\'' +
+                ", inspections=" + inspections +
+                '}';
     }
 }

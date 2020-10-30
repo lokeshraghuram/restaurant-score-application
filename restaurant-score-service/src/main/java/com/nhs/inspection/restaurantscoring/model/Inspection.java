@@ -2,6 +2,7 @@ package com.nhs.inspection.restaurantscoring.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Inspection implements Serializable {
 
+    @NotNull
     private String inspection_id;
     private LocalDateTime inspection_date;
     private Double inspection_score;
@@ -53,5 +55,16 @@ public class Inspection implements Serializable {
 
     public void setViolations(List<Violation> violations) {
         this.violations = violations;
+    }
+
+    @Override
+    public String toString() {
+        return "Inspection{" +
+                "inspection_id='" + inspection_id + '\'' +
+                ", inspection_date=" + inspection_date +
+                ", inspection_score=" + inspection_score +
+                ", inspection_type='" + inspection_type + '\'' +
+                ", violations=" + violations +
+                '}';
     }
 }

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property resource="application.properties" />
+    <contextName>${spring.application.name}</contextName>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>TRACE</level>
+            <onMatch>ACCEPT</onMatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>DENY</onMatch>
+        </filter>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+        </filter>
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <provider class="net.logstash.logback.composite.loggingevent.ArgumentsJsonProvider"/>
+        </encoder>
+    </appender>
+
+    <appender name="STDERR" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.err</target>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <provider class="net.logstash.logback.composite.loggingevent.ArgumentsJsonProvider"/>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNC_CONSOLE_OUT" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>${application.logBack.queueSize}</queueSize>
+        <discardingThreshold>${application.logBack.discardingThreshold}</discardingThreshold>
+        <neverBlock>${application.logBack.neverBlock}</neverBlock>
+        <maxFlushTime>${application.logBack.maxFlushTime}</maxFlushTime>
+        <appender-ref ref="STDOUT" />
+    </appender>
+
+    <appender name="ASYNC_CONSOLE_ERR" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>${application.logBack.queueSize}</queueSize>
+        <discardingThreshold>${application.logBack.discardingThreshold}</discardingThreshold>
+        <neverBlock>${application.logBack.neverBlock}</neverBlock>
+        <maxFlushTime>${application.logBack.maxFlushTime}</maxFlushTime>
+        <appender-ref ref="STDERR" />
+    </appender>
+
+    <logger name="org.springframework.boot" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_CONSOLE_OUT"/>
+        <appender-ref ref="ASYNC_CONSOLE_ERR" />
+    </logger>
+    <logger name="org.springframework.test" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_CONSOLE_OUT"/>
+        <appender-ref ref="ASYNC_CONSOLE_ERR" />
+    </logger>
+    <logger name="org.springframework.cloud" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_CONSOLE_OUT"/>
+        <appender-ref ref="ASYNC_CONSOLE_ERR" />
+    </logger>
+    <logger name="org.springframework.security" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_CONSOLE_OUT"/>
+        <appender-ref ref="ASYNC_CONSOLE_ERR" />
+    </logger>
+    <logger name="org.springframework.core" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_CONSOLE_OUT"/>
+        <appender-ref ref="ASYNC_CONSOLE_ERR" />
+    </logger>
+    <logger name="org.springframework.mock" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_CONSOLE_OUT"/>
+        <appender-ref ref="ASYNC_CONSOLE_ERR" />
+    </logger>
+    <logger name="com.nhs.inspection" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_CONSOLE_OUT"/>
+        <appender-ref ref="ASYNC_CONSOLE_ERR" />
+    </logger>
+
+
+    <root level="INFO">
+        <appender-ref ref="ASYNC_CONSOLE_OUT"/>
+        <appender-ref ref="ASYNC_CONSOLE_ERR" />
+    </root>
+</configuration>

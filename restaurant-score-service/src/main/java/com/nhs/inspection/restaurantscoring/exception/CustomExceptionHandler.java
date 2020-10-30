@@ -37,7 +37,11 @@ public class CustomExceptionHandler {
         }
     }
 
-    protected void throwInternalException(Exception ex, String code, String message, HttpStatus httpStatus) {
+    public void throwInternalException(Exception ex, String code, String message, HttpStatus httpStatus) {
         throw new CustomRuntimeException(code, message, Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))), httpStatus, ex);
+    }
+
+    public void throwInternalException(String code, String message, HttpStatus httpStatus) {
+        throw new CustomRuntimeException(code, message, Timestamp.valueOf(LocalDateTime.now(ZoneId.of("UTC"))), httpStatus);
     }
 }

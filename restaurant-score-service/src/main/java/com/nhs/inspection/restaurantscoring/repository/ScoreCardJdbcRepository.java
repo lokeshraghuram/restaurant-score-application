@@ -7,8 +7,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.awt.*;
+import java.awt.geom.Point2D;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.List;
 
 @Repository
 public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
@@ -74,8 +77,20 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
                 Map<String, Object> params = new HashMap<>();
                 params.put("business_id", scoreCard.getBusiness_id());
                 params.put("business_name", scoreCard.getBusiness_name());
+                params.put("business_address", scoreCard.getBusiness_address());
+                params.put("business_city", scoreCard.getBusiness_city());
+                params.put("business_state", scoreCard.getBusiness_state());
+                params.put("business_postal_code", scoreCard.getBusiness_postal_code());
+                params.put("business_latitude", scoreCard.getBusiness_latitude());
+                params.put("business_longitude", scoreCard.getBusiness_longitude());
+                params.put("business_phone_number", scoreCard.getBusiness_phone_number());
                 params.put("inspection_id", inspection.getInspection_id());
+                params.put("inspection_type", inspection.getInspection_type());
+                params.put("inspection_score", inspection.getInspection_score());
+                params.put("inspection_date", inspection.getInspection_date());
                 params.put("violation_id", violation.getViolation_id());
+                params.put("violation_description", violation.getViolation_description());
+                params.put("risk_category", violation.getRisk_category());
                 paramsList.add(params);
             });
         });
@@ -83,11 +98,17 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
     }
 
     private String prepareSqlInsertFromScoreCard() {
-        String sql = "insert into inspection.restaurant_data(business_id, business_name, inspection_id, violation_id) values " +
+        String sql = "insert into inspection.restaurant_data" +
+                "(business_id, business_name, business_address, business_city, business_state," +
+                "business_postal_code, business_latitude, business_longitude, " +
+                "business_phone_number, inspection_id, inspection_date, inspection_type, inspection_score," +
+                "violation_id, violation_description, risk_category) values " +
                 " (" +
-                ":business_id, :business_name, :inspection_id, :violation_id" +
+                ":business_id, :business_name, :business_address, :business_city, :business_state, " +
+                ":business_postal_code, :business_latitude, :business_longitude," +
+                ":business_phone_number, :inspection_id, :inspection_date, :inspection_type, :inspection_score," +
+                ":violation_id, :violation_description, :risk_category" +
                 ")";
-        //System.out.println("SQL->"+sql);
         return sql;
     }
 

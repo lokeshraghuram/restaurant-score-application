@@ -2,10 +2,12 @@ package com.nhs.inspection.restaurantscoring.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Violation implements Serializable {
+    @NotNull
     private String violation_id;
     private String violation_description;
     private String risk_category;
@@ -32,5 +34,14 @@ public class Violation implements Serializable {
 
     public void setRisk_category(String risk_category) {
         this.risk_category = risk_category;
+    }
+
+    @Override
+    public String toString() {
+        return "Violation{" +
+                "violation_id='" + violation_id + '\'' +
+                ", violation_description='" + violation_description + '\'' +
+                ", risk_category='" + risk_category + '\'' +
+                '}';
     }
 }
