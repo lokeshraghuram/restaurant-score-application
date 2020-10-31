@@ -2,7 +2,6 @@
 
 This is a backend service which provides CRUD APIs for restaurant scoring
 
-
 == Endpoints
 
 

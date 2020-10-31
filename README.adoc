@@ -1,11 +1,37 @@
 = Restaurant Scoring Application
 
 === Design
-- REST APIs with Role Based Authentication
+- REST APIs with Role Based Authentication. Refer <<restaurant-scoring-service/README.adoc#, restaurant-scoring-service>> for complete details
 - https://springdoc.org/[Open API] Specification for API documentation
 - PostgreSQL for persisting the data
 - https://www.jaegertracing.io/[Jaeger] Open Tracing for observability
 - https://cloud.google.com/blog/products/gcp/getting-more-value-from-your-stackdriver-logs-with-structured-data[Structured Logging] using http://logback.qos.ch/[logback]
 - Global Exception handling with unique error codes using Controller Advice
 - Spring boot actuator for monitoring
-- Behaviorial Testing using Cucumber and Rest Assured. Refer to <<cucumber-testsuite/README.adoc#, doc1>> for more information.
+- Behaviorial Testing using Cucumber and Rest Assured. Refer to <<cucumber-testsuite/README.adoc#, Test Suite>> for more information
+
+=== Trade-offs
+
+==== spring-starter-jpa vs spring-starter-jdbc
+
+After reading the requirement, one aspect that got me thinking was - "what data type must be used to persist business_location?"
+A bit of googling lead me to `Point` datatype in PostgreSQL. I could not deserialize `Point` column into JPA Entity.
+I tried with different Hibernate dialects but it did not help. Due to interest of time, I switched to `spring-starter-jdbc`
+where I used custom `RowMapper`, read the value of `Point` column as `String`, extracted latitude & longitude and created
+`Point` object in the code
+
+==== JUnit vs Cucumber framework
+
+Testing is very critical for developing successful product/service. I had to make a decision between Junit and Cucumber as
+I cannot implement both within the given time. I chose to develop an application using <<cucumber-testsuite/README.adoc#, cucumber framework>>
+over Junit for below reasons
+
+- Cucumber is more ideal for end to end testing of a product covering all business scenarios
+- There are standard procedures for writing JUnits. Cucumber is unique
+- Cucumber provides useful reports and if integrated to CI pipeline, it acts as regression test suite
+
+==== Role based Authorization vs Jwt Authorization
+
+Jwt Authorization is go-to option if I had sufficient time. Since I have to setup the Authentication server for generation
+of tokens, I decided to implement Role based Authentication which provides basic security to the service
+
