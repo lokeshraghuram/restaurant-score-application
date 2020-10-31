@@ -1,4 +1,16 @@
 = Restaurant Scoring Service
-This is a backedn
 
-==== Dependencies Used
+This is a backend service which provides CRUD APIs for restaurant scoring
+
+== Design
+- REST APIs with Role Based Authentication
+- https://springdoc.org/[Open API] Specification for API documentation
+- PostgreSQL for persisting the data
+- https://www.jaegertracing.io/[Jaeger] Open Tracing for observability
+- https://cloud.google.com/blog/products/gcp/getting-more-value-from-your-stackdriver-logs-with-structured-data[Structured Logging] using http://logback.qos.ch/[logback]
+- Global Exception handling with unique error codes using Controller Advice
+- Spring boot actuator for monitoring
+
+== Endpoints
+
+
