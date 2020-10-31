@@ -26,6 +26,10 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
         this.restaurantDataRowMapper = restaurantDataRowMapper;
     }
 
+    /**
+     * @param businessId Business Id
+     * @return List of Restaurant Data objects from public data set
+     */
     public List<RestaurantData> getScoreCardsForBusinessId(String businessId) {
         try {
             return this.queryForList("select * from inspection.restaurant_data where business_id = ?",
@@ -37,6 +41,10 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
         }
     }
 
+    /**
+     * @param inspectionId Inspection Id
+     * @return List of Restaurant Data objects from public data set
+     */
     public List<RestaurantData> getScoreCardsForInspectionId(String inspectionId) {
         try {
             return this.queryForList("select * from inspection.restaurant_data where inspection_id = ?",
@@ -48,6 +56,10 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
         }
     }
 
+    /**
+     * @param violationId Violation Id
+     * @return List of Restaurant Data objects from public data set
+     */
     public RestaurantData getScoreCardForViolationId(String violationId) {
         try {
             return this.queryForObject("select * from inspection.restaurant_data where violation_id = ?",
@@ -59,6 +71,10 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
         }
     }
 
+    /**
+     * @param scoreCard ScoreCard
+     * @return Number of effected entries in database
+     */
     public int createScoreCard(ScoreCard scoreCard){
         try {
             return this.insertObject(prepareSqlInsertFromScoreCard(), createNamedParameters(scoreCard)).length;
@@ -124,6 +140,10 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
     }
 
 
+    /**
+     * @param scoreCard ScoreCard
+     * @return Number of effected entries in database
+     */
     public int updateScoreCard(ScoreCard scoreCard) {
         try {
             return this.updateObject(prepareSqlUpdateFromScoreCard(), createNamedParameters(scoreCard)).length;
@@ -133,6 +153,10 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
         return 0;
     }
 
+    /**
+     * @param violationId Violation Id
+     * @return Number of effected entries in database
+     */
     public int deleteViolationScoreCard(String violationId) {
         try {
             return this.deleteObject("delete from inspection.restaurant_data where violation_id = ?",
@@ -143,6 +167,10 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
         }
     }
 
+    /**
+     * @param inspectionId Inspection Id
+     * @return Number of effected entries in database
+     */
     public int deleteInspectionScoreCards(String inspectionId) {
         try {
             return this.deleteObject("delete from inspection.restaurant_data where inspection_id = ?",

@@ -1,6 +1,5 @@
 package com.nhs.inspection.restaurantscoring.exception;
 
-import com.nhs.inspection.restaurantscoring.constants.ErrorConstants;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;

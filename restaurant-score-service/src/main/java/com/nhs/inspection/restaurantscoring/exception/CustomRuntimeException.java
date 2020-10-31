@@ -21,18 +21,6 @@ public class CustomRuntimeException extends RuntimeException {
         super();
     }
 
-    public CustomRuntimeException(String message) {
-        super(message);
-    }
-
-    public CustomRuntimeException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public CustomRuntimeException(Throwable cause) {
-        super(cause);
-    }
-
     public CustomRuntimeException(String code, String message, Date timestamp, HttpStatus exceptionHttpStatus, Throwable ex) {
         super(message, ex);
         this.code = code;

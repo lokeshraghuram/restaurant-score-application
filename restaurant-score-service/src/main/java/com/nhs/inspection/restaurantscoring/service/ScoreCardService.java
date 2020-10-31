@@ -31,6 +31,10 @@ public class ScoreCardService {
         this.customExceptionHandler = customExceptionHandler;
     }
 
+    /** Fetches the violations for business id from public dataset and converts to ScoreCardResponse object
+     * @param businessId Business Id
+     * @return Violation Report from public dataset
+     */
     public ScoreCardResponse getScoreCardsForBusinessId(String businessId) {
         List<RestaurantData> scoreCardsForBusinessId = scoreCardJdbcRepository.getScoreCardsForBusinessId(businessId);
 
@@ -106,6 +110,10 @@ public class ScoreCardService {
         return scoreCardResponse;
     }
 
+    /** Fetches the violations for inspection id from public dataset and converts to List of ScoreCardResponse objects
+     * @param inspectionId Inspection Id
+     * @return Violation Reports from public dataset
+     */
     public List<ScoreCardResponse> getScoreCardsForInspectionId(String inspectionId) {
         List<RestaurantData> scoreCardsForInspectionId = scoreCardJdbcRepository.getScoreCardsForInspectionId(inspectionId);
         List<ScoreCardResponse> scoreCardResponses = new ArrayList<>();
@@ -116,30 +124,50 @@ public class ScoreCardService {
         return scoreCardResponses;
     }
 
+    /** Fetches the violation for id from public dataset and converts to ScoreCardResponse object
+     * @param violationId Violation Id
+     * @return Violation Reports from public dataset
+     */
     public ScoreCardResponse getScoreCardsForViolationId(String violationId) {
         RestaurantData scoreCardForViolationId = scoreCardJdbcRepository.getScoreCardForViolationId(violationId);
         return createScoreCardResponseFromRestaurantData(scoreCardForViolationId);
     }
 
+    /** Creates violations in public dataset from the score card published by inspection officer
+     * @param scoreCard ScoreCard
+     * @return Number of violations added to public dataset
+     */
     public int createScoreCard(ScoreCard scoreCard) {
         validateScoreCard(scoreCard);
         return scoreCardJdbcRepository.createScoreCard(scoreCard);
     }
 
-    private void validateScoreCard(ScoreCard scoreCard) {
-        // Place holder for business logic or any validations
-    }
-
+    /** Update violations in public dataset from the score card published by inspection officer
+     * @param scoreCard ScoreCard
+     * @return Number of violations updated in public dataset
+     */
     public int updateScoreCard(ScoreCard scoreCard) {
         validateScoreCard(scoreCard);
         return scoreCardJdbcRepository.updateScoreCard(scoreCard);
     }
 
+    /** Delete violation in public dataset that matches the violationId passed in the request
+     * @param violationId Violation Id
+     * @return Number of violations deleted in public dataset
+     */
     public int deleteViolation(String violationId) {
         return scoreCardJdbcRepository.deleteViolationScoreCard(violationId);
     }
 
+    /** Delete violation in public dataset that matches the inspectionId passed in the request
+     * @param inspectionId Inspection Id
+     * @return Number of violations deleted in public dataset
+     */
     public int deleteInspection(String inspectionId) {
         return scoreCardJdbcRepository.deleteInspectionScoreCards(inspectionId);
+    }
+
+    private void validateScoreCard(ScoreCard scoreCard) {
+        // Place holder for business logic or any validations
     }
 }

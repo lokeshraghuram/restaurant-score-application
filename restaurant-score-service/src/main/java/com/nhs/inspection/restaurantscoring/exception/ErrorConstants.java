@@ -1,4 +1,4 @@
-package com.nhs.inspection.restaurantscoring.constants;
+package com.nhs.inspection.restaurantscoring.exception;
 
 public class ErrorConstants {
 

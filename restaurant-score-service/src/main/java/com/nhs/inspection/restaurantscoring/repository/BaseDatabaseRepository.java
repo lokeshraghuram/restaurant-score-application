@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,38 +14,38 @@ public class BaseDatabaseRepository {
     protected JdbcTemplate jdbcTemplate;
     protected NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public BaseDatabaseRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) throws SQLException {
+    public BaseDatabaseRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    public <T> List<T> queryForList(String sql, Object[] args, RowMapper<T> mapper) {
+    protected <T> List<T> queryForList(String sql, Object[] args, RowMapper<T> mapper) {
         return jdbcTemplate.query(sql, args, mapper);
     }
 
-    public <T> T queryForObject(String sql, Object[] args, RowMapper<T> mapper) {
+    protected <T> T queryForObject(String sql, Object[] args, RowMapper<T> mapper) {
         return jdbcTemplate.queryForObject(sql, args, mapper);
     }
 
-    public int deleteObject(String sql, Object[] args) {
+    protected int deleteObject(String sql, Object[] args) {
         return jdbcTemplate.update(sql, args);
     }
 
-    public int[] insertObject(String sql, List<Map<String, Object>> paramsList) {
-        Map<String,Object>[] paramsArray;
+    protected int[] insertObject(String sql, List<Map<String, Object>> paramsList) {
+        Map<String, Object>[] paramsArray;
         paramsArray = convertLisToArray(paramsList);
         return namedParameterJdbcTemplate.batchUpdate(sql, paramsArray);
     }
 
-    public int[] updateObject(String sql, List<Map<String, Object>> paramsList) {
-        Map<String,Object>[] paramsArray;
+    protected int[] updateObject(String sql, List<Map<String, Object>> paramsList) {
+        Map<String, Object>[] paramsArray;
         paramsArray = convertLisToArray(paramsList);
         return namedParameterJdbcTemplate.batchUpdate(sql, paramsArray);
     }
 
     private Map<String, Object>[] convertLisToArray(List<Map<String, Object>> paramsList) {
         @SuppressWarnings("unchecked")
-        Map<String,Object>[] paramsArray = new HashMap[paramsList.size()];
+        Map<String, Object>[] paramsArray = new HashMap[paramsList.size()];
 
         Iterator<Map<String, Object>> iterator = paramsList.iterator();
         int i = 0;
