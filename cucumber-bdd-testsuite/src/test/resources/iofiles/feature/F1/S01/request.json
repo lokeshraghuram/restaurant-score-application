@@ -1,0 +1,49 @@
+{
+  "business_id": "b3",
+  "business_name": "hotel-h1",
+  "business_address": "address1",
+  "business_city": "city1",
+  "business_state": "state1",
+  "business_postal_code": "pc1",
+  "business_latitude": 37.5,
+  "business_longitude": 37.5,
+  "business_phone_number": "1235680",
+  "inspections": [
+    {
+      "inspection_id": "i1",
+      "inspection_date": "2021-08-31T16:00:00Z",
+      "inspection_score": 70,
+      "inspection_type": "Routine",
+      "violations": [
+        {
+          "violation_id": "v1",
+          "violation_description": "v1 description",
+          "risk_category": "high"
+        },
+        {
+          "violation_id": "v2",
+          "violation_description": "v2 description",
+          "risk_category": "high"
+        }
+      ]
+    },
+    {
+      "inspection_id": "i2",
+      "inspection_date": "2020-10-31T16:00:00Z",
+      "inspection_score": 80,
+      "inspection_type": "Routine",
+      "violations": [
+        {
+          "violation_id": "v3",
+          "violation_description": "v3 description",
+          "risk_category": "low"
+        },
+        {
+          "violation_id": "v4",
+          "violation_description": "v4 description",
+          "risk_category": "medium"
+        }
+      ]
+    }
+  ]
+}
