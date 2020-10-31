@@ -9,7 +9,7 @@ This is a backend service which provides CRUD APIs for restaurant scoring
 - PostgreSQL
 
 ==== Optional
-- Jaeger. Set `opentracing.jaeger.enabled=false` for enabling traces
+- Jaeger. If Jaeger is setup, change `opentracing.jaeger.enabled` to `true` for enabling traces
 
 Once pre-requisites are in place, use the IDE of your choice and run the service using `mvn spring-boot:run`
 
@@ -24,7 +24,7 @@ Role based authentication is described in <<Security,security>> section
 
 == Database Schema
 
-Two tables are used. For scripts, refer <<..db-scripts/DDL.sql#,here>>
+Two tables are used. For scripts, refer <<../db-scripts/DDL.sql#,here>>
 
 1. restaurant_data: This is created as per LIVES version 2.0.
 Primary key is combination of *business_id, inspection_id and violation_id*
