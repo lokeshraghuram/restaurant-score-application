@@ -13,11 +13,35 @@ request body and authorization header. To make Rest calls, https://rest-assured.
 Junit Assertions are used for validating the actual response with the expected result which is stored under src/main/resources/iofiles
 
 === Execution Steps
-- Execute mvn test for running the tests
+- Execute `mvn test` for running the tests
 - CucumberTestRunner class will be triggered. Features files are supplied as CucumberOptions in this class
 - All feature files available in the path will be executed sequentially
 - This application is configured to produce HTML and XML reports
 - Check in target/cucumber/index.html and target/cucumber-reports/cucumber.xml for reports
 
 === Reports
+==== HTML Report
+image::src/main/docs/html-report.JPG[Html_Report_Snippet]
+
+==== XML Report
+[source,xml]
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<testsuite errors="0" failures="0" name="io.cucumber.core.plugin.JUnitFormatter" skipped="0" tests="1" time="4.263">
+<testcase classname="To test feature of restaurant scoring service" name="S01-Test new score card creation after an inspection" time="1.439">
+<system-out>
+<![CDATA[Given that for scenario "S01" inspection is done and score card is available.passed
+When request is sent to restaurant scoring service..........................passed
+Then response of scenario "S01" must have 200 status code...................passed
+And response of scenario "S01" must match with the expected result..........passed
+When we get the score card of the same business id, response must have all fields mapped.passed
+]]>
+</system-out>
+</testcase>
+</testsuite>
+
+=== What's Left out
+I tried to implement only a high level view on the concept of behaviour driven testing for testing REST api
+using Cucumber & Rest Assured. Only one scenario is written due to lack of time.
+
+Extending this test suite to cover all possible business scenarios acts as best source for regression testing
 
