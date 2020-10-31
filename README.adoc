@@ -1,7 +1,7 @@
 = Restaurant Scoring Application
 
 === Design
-- REST APIs with Role Based Authentication. Refer <<restaurant-scoring-service/README.adoc#, restaurant-scoring-service>> for complete details
+- REST APIs with Role Based Authentication. Refer <<restaurant-score-service/README.adoc#, restaurant-score-service>> for complete details
 - https://springdoc.org/[Open API] Specification for API documentation
 - PostgreSQL for persisting the data
 - https://www.jaegertracing.io/[Jaeger] Open Tracing for observability
