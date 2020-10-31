@@ -35,7 +35,7 @@ over Junit for below reasons
 Jwt Authorization is go-to option if I had sufficient time. Since I have to setup the Authentication server for generation
 of tokens, I decided to implement Role based Authentication which provides basic security to the service
 
-==== Code Reference
+==== Code References
 
 None of the code is directly taken from any source. However for spring-security, jaeger, cucumber & rest-assured, I referred to examples
 in Internet for approach and syntax.
