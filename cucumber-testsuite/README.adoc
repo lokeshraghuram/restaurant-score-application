@@ -4,13 +4,13 @@ are working as expected
 
 It uses https://cucumber.io/[Cucumber] - a Behaviour driven development framework to test the features. Behaviours are
 recorded in https://cucumber.io/docs/gherkin/[Gherkin] format in feature files. Each Gherkin scenario consists of multiple steps
-which will be in plain English and can be easily understood by anyone. Implementations of these
-Gherkin steps which are written in Java does the testing in the backend.
+written in plain English and can be easily understood by anyone. Implementations of these
+Gherkin steps are written in Java methods.
 
-For testing restaurant-scoring-service, we need to test all the endpoints exposed by passing
+For testing restaurant-scoring-service, we need to test all the endpoints by passing
 request body and authorization header. To make Rest calls, https://rest-assured.io/[RestAssured] library is used
 
-Junit Assertions are used for validating the actual response with the expected result which is stored under src/main/resources/iofiles
+Junit Assertions are used for validating the actual response with the expected result which are stored under src/main/resources/iofiles
 
 === Execution Steps
 - Execute `mvn test` for running the tests
@@ -40,8 +40,8 @@ When we get the score card of the same business id, response must have all field
 </testsuite>
 
 === What's Left out
-I tried to implement only a high level view on the concept of behaviour driven testing for testing REST api
-using Cucumber & Rest Assured. Only one scenario is written due to lack of time.
+I implemented template application that takes advantages of behaviour driven testing for testing REST api
+using Cucumber & Rest Assured. Only one scenario is added due to lack of time.
 
 Extending this test suite to cover all possible business scenarios acts as best source for regression testing
 
