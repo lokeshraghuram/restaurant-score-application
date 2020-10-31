@@ -56,14 +56,12 @@ CONSTRAINT PK_Person PRIMARY KEY (business_id,inspection_id,violation_id)
 This table holds the inspection status and the last inspection date of each business id
 
 ===== Schema
-`+
-create table inspection.restaurant_status (
+`+create table inspection.restaurant_status (
 business_id varchar(255) not null,
 inspection_date timestamp with time zone,
 status varchar(255),
 PRIMARY KEY (business_id)
-);
-+`
+);+`
 
 == Security
 
@@ -77,9 +75,27 @@ Reason for creating above roles is to restrict the use of POST, PUT and DELETE m
 In Postman, under Authorization, choose `Basic Auth`. Type username and password depending on the endpoint you want to test.
 `inspector` credentials works for all URLs whereas `public` endpoint works only for `GET` URLs
 
-== Demonstration
+Key thing to remember is to pass the correct Authorization header. If you are facing any issues or if the explanation is
+not clear, simply add `Authorization` as key and `Basic aW5zcGVjdG9yOmluc3BlY3Rvcg==` as value. That should work
 
-=== Testing Endpoints
+== Tracing & Observability
+
+Open tracing Jaeger is integrated into this service. Check snippets below
+
+==== Jaeger home screen displaying service details
+
+image::src/main/docs/images/jaeger.jpg[Jaeger UI]
+
+==== Details of one Trace
+image::src/main/docs/images/Trace1.JPG[Trace]
+
+== Testing Endpoints
+
+Ensure Authorization header is added before testing. For sample request, refer cucumber-testsuite application.
+Navigate to `src/main/resources/iofiles/feature/F1/S01/request.json`
+
+This request can be used for `POST` and `PUT` methods. For `GET` methods, make sure the correct URL is chosen and parameter
+is passed
 
 
 
