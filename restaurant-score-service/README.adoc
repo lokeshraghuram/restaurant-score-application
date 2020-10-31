@@ -2,6 +2,50 @@
 
 This is a backend service which provides CRUD APIs for restaurant scoring
 
+== How to launch the service
+=== Pre-requisites
+==== Mandatory
+- Java 11, Maven
+- PostgreSQL
+
+==== Optional
+- Jaeger. Set `opentracing.jaeger.enabled=false` for enabling traces
+
+Once pre-requisites are in place, use the IDE of your choice and run the service using `mvn spring-boot:run`
+
 == Endpoints
+
+After application is launched, hit the url - http://localhost:8082/swagger-ui/index.html. A window pops up requesting for credentials.
+Use "public" as username and password. You should see Open Api definition like below
+
+image::src/main/docs/images/open-api.JPG[Open Api]
+
+Role based authentication is described in <<Security,security>> section
+
+== Database Schema
+
+Two tables are used. For scripts, refer <<..db-scripts/DDL.sql#,here>>
+
+1. restaurant_data: This is created as per LIVES version 2.0.
+Primary key is combination of *business_id, inspection_id and violation_id*
+
+2. restaurant_status: This table holds the inspection status and the last inspection date of each business id
+
+== Security
+
+Following users are added to InMemoryUserDetailsManager
+
+- Inspector: Has authorities to `scope:read` and `scope:write`. Username and password is *inspector*
+- Public: Has authorities to `scope:read` only. Username and password is *public*
+
+Reason for creating above roles is to restrict the use of POST, PUT and DELETE methods to only inspectors
+
+In Postman, under Authorization, choose `Basic Auth`. Type username and password depending on the endpoint you want to test.
+`inspector` credentials works for all URLs whereas `public` endpoint works only for `GET` URLs
+
+== Demonstration
+
+=== Testing Endpoints
+
 
 
