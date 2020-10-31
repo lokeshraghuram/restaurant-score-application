@@ -9,12 +9,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/restaurant-scoring")
@@ -26,48 +25,116 @@ public class RestaurantScoringRestController {
         this.scoreCardService = scoreCardService;
     }
 
-    @Operation(summary = "Get all inspection results of given business id")
+    @Operation(summary = "Get all inspection results of a business id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found Inspection results",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ScoreCardResponse.class)) }),
-            @ApiResponse(responseCode = "400", description = "Record not found",
-                    content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ErrorInfo.class)))})
-    @GetMapping(value = "/scorecard/business-id/{business_id}")
-    public ScoreCardResponse getScoreCardForBusinessId(@PathVariable("business_id") String business_id) {
-        return scoreCardService.getScoreCardsForBusinessId(business_id);
-    }
-
-    @Operation(summary = "Get all inspection results of given inspection id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found Inspection results",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ScoreCardResponse.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ScoreCardResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Record not found",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorInfo.class)))})
-    @GetMapping(value = "/scorecard/inspection-id/{inspection_id}")
-    public List<ScoreCardResponse> getScoreCardForInspectionId(@PathVariable("inspection_id") String inspection_id) {
-        return scoreCardService.getScoreCardsForInspectionId(inspection_id);
+    @GetMapping(value = "/scorecard/business-id/{businessId}")
+    @PreAuthorize("hasAnyRole('ROLE_INSPECTOR', 'ROLE_PUBLIC')")
+    public ScoreCardResponse getScoreCardForBusinessId(@PathVariable("businessId") String businessId) {
+        return scoreCardService.getScoreCardsForBusinessId(businessId);
     }
 
-    @Operation(summary = "Get full details of a particular violation")
+    @Operation(summary = "Get all inspection results of a inspection id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found Inspection results",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ScoreCardResponse.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ScoreCardResponse.class))}),
             @ApiResponse(responseCode = "400", description = "Record not found",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorInfo.class)))})
-    @GetMapping(value = "/scorecard/violation-id/{violation_id}")
-    public ScoreCardResponse getScoreCardForViolationId(@PathVariable("violation_id") String violationId) {
+    @GetMapping(value = "/scorecard/inspection-id/{inspectionId}")
+    @PreAuthorize("hasAnyRole('ROLE_INSPECTOR', 'ROLE_PUBLIC')")
+    public List<ScoreCardResponse> getScoreCardForInspectionId(@PathVariable("inspectionId") String inspectionId) {
+        return scoreCardService.getScoreCardsForInspectionId(inspectionId);
+    }
+
+    @Operation(summary = "Get details of a violation")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found Inspection results",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ScoreCardResponse.class))}),
+            @ApiResponse(responseCode = "400", description = "Record not found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorInfo.class)))})
+    @GetMapping(value = "/scorecard/violation-id/{violationId}")
+    @PreAuthorize("hasAnyRole('ROLE_INSPECTOR', 'ROLE_PUBLIC')")
+    public ScoreCardResponse getScoreCardForViolationId(@PathVariable("violationId") String violationId) {
         return scoreCardService.getScoreCardsForViolationId(violationId);
     }
 
+    @Operation(summary = "Create score card with list of all violations after completing an inspection")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Add violations after an inspection",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "400", description = "Validation of score card has failed",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorInfo.class))),
+            @ApiResponse(responseCode = "500", description = "Database Related Errors/Primary Constraint Violation",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorInfo.class)))
+    })
     @PostMapping(value = "/scorecard")
+    @PreAuthorize("hasAuthority('score:write')")
     public String createScoreCard(@Valid @RequestBody ScoreCard scoreCard) {
-        scoreCardService.createScoreCard(scoreCard);
-        return "Score card is added to dataset successfully";
+        int recordsInserted = scoreCardService.createScoreCard(scoreCard);
+        return "Score card is added to dataset successfully. "+ recordsInserted + " violations are added";
+    }
+
+
+    @Operation(summary = "Update details of score card")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Update violation details",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "400", description = "Validation of score card has failed",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorInfo.class))),
+            @ApiResponse(responseCode = "500", description = "Database Related Errors",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorInfo.class)))
+    })
+    @PutMapping(value = "/scorecard")
+    @PreAuthorize("hasAuthority('score:write')")
+    public String updateScoreCard(@Valid @RequestBody ScoreCard scoreCard) {
+        int recordsUpdated = scoreCardService.updateScoreCard(scoreCard);
+        return "Score card is updated successfully. "+ recordsUpdated + " violations are updated";
+    }
+
+    @Operation(summary = "Delete Violation from dataset")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Delete violation",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "500", description = "Database Related Errors",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorInfo.class)))
+    })
+    @DeleteMapping(value = "/scorecard/violation-id/{violationId}")
+    @PreAuthorize("hasAuthority('score:write')")
+    public String deleteViolation(@PathVariable("violationId") String violationId) {
+        int recordsDeleted = scoreCardService.deleteViolation(violationId);
+        return String.valueOf(recordsDeleted) + "violation records are deleted";
+    }
+
+    @Operation(summary = "Delete all violations of an inspection from dataset")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Delete violation",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "500", description = "Database Related Errors",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorInfo.class)))
+    })
+    @DeleteMapping(value = "/scorecard/inspection-id/{inspectionId}")
+    @PreAuthorize("hasAuthority('score:write')")
+    public String deleteInspection(@PathVariable("inspectionId") String inspectionId) {
+        int recordsDeleted = scoreCardService.deleteInspection(inspectionId);
+        return String.valueOf(recordsDeleted) + "violation records are deleted";
     }
 }

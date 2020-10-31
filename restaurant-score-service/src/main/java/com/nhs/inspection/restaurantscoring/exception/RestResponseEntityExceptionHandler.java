@@ -76,13 +76,6 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
                 getResponseHeaders(request), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
-    @ExceptionHandler(value = {RuntimeException.class})
-    protected ResponseEntity<Object> handleUnknownException(RuntimeException ex, WebRequest request) {
-        CustomRuntimeException exception = new CustomRuntimeException("INTERNAL_ERROR", "Runtime Exception", Timestamp.valueOf(LocalDateTime.now(DEFAULT_ZONE_ID)), HttpStatus.INTERNAL_SERVER_ERROR);
-        return handleExceptionInternal(ex, exception,
-                getResponseHeaders(request), HttpStatus.INTERNAL_SERVER_ERROR, request);
-    }
-
     private HttpHeaders getResponseHeaders(WebRequest request) {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.CONTENT_TYPE, request.getHeader(HttpHeaders.CONTENT_TYPE));

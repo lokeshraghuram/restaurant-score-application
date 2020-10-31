@@ -7,8 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.awt.*;
-import java.awt.geom.Point2D;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
@@ -61,12 +59,13 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
         }
     }
 
-    public void createScoreCard(ScoreCard scoreCard){
+    public int createScoreCard(ScoreCard scoreCard){
         try {
-            this.insertObject(prepareSqlInsertFromScoreCard(), createNamedParameters(scoreCard));
+            return this.insertObject(prepareSqlInsertFromScoreCard(), createNamedParameters(scoreCard)).length;
         } catch (Exception ex) {
             customExceptionHandler.handleSqlRepositoryExceptions(ex);
         }
+        return 0;
     }
 
     private List<Map<String, Object>> createNamedParameters(ScoreCard scoreCard) {
@@ -98,7 +97,7 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
     }
 
     private String prepareSqlInsertFromScoreCard() {
-        String sql = "insert into inspection.restaurant_data" +
+        return "insert into inspection.restaurant_data" +
                 "(business_id, business_name, business_address, business_city, business_state," +
                 "business_postal_code, business_latitude, business_longitude, " +
                 "business_phone_number, inspection_id, inspection_date, inspection_type, inspection_score," +
@@ -109,8 +108,48 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
                 ":business_phone_number, :inspection_id, :inspection_date, :inspection_type, :inspection_score," +
                 ":violation_id, :violation_description, :risk_category" +
                 ")";
-        return sql;
+    }
+
+    private String prepareSqlUpdateFromScoreCard() {
+        return "update inspection.restaurant_data SET " +
+                "business_name=:business_name, business_address=:business_address, business_city=:business_city," +
+                "business_state=:business_state, business_postal_code=:business_postal_code, business_latitude=:business_latitude," +
+                "business_longitude=:business_longitude, business_phone_number=:business_phone_number, " +
+                "inspection_date=:inspection_date," +
+                "inspection_type=:inspection_type, inspection_score=:inspection_score, " +
+                "violation_description=:violation_description," +
+                "risk_category=:risk_category" +
+                " WHERE " +
+                "(business_id = :business_id and inspection_id = :inspection_id and violation_id = :violation_id)";
     }
 
 
+    public int updateScoreCard(ScoreCard scoreCard) {
+        try {
+            return this.updateObject(prepareSqlUpdateFromScoreCard(), createNamedParameters(scoreCard)).length;
+        } catch (Exception ex) {
+            customExceptionHandler.handleSqlRepositoryExceptions(ex);
+        }
+        return 0;
+    }
+
+    public int deleteViolationScoreCard(String violationId) {
+        try {
+            return this.deleteObject("delete from inspection.restaurant_data where violation_id = ?",
+                    new Object[]{violationId});
+        } catch (Exception ex) {
+            customExceptionHandler.handleSqlRepositoryExceptions(ex);
+            return 0;
+        }
+    }
+
+    public int deleteInspectionScoreCards(String inspectionId) {
+        try {
+            return this.deleteObject("delete from inspection.restaurant_data where inspection_id = ?",
+                    new Object[]{inspectionId});
+        } catch (Exception ex) {
+            customExceptionHandler.handleSqlRepositoryExceptions(ex);
+            return 0;
+        }
+    }
 }

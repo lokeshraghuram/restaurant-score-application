@@ -121,12 +121,25 @@ public class ScoreCardService {
         return createScoreCardResponseFromRestaurantData(scoreCardForViolationId);
     }
 
-    public void createScoreCard(ScoreCard scoreCard) {
+    public int createScoreCard(ScoreCard scoreCard) {
         validateScoreCard(scoreCard);
-        scoreCardJdbcRepository.createScoreCard(scoreCard);
+        return scoreCardJdbcRepository.createScoreCard(scoreCard);
     }
 
     private void validateScoreCard(ScoreCard scoreCard) {
         // Place holder for business logic or any validations
+    }
+
+    public int updateScoreCard(ScoreCard scoreCard) {
+        validateScoreCard(scoreCard);
+        return scoreCardJdbcRepository.updateScoreCard(scoreCard);
+    }
+
+    public int deleteViolation(String violationId) {
+        return scoreCardJdbcRepository.deleteViolationScoreCard(violationId);
+    }
+
+    public int deleteInspection(String inspectionId) {
+        return scoreCardJdbcRepository.deleteInspectionScoreCards(inspectionId);
     }
 }

@@ -28,10 +28,20 @@ public class BaseDatabaseRepository {
         return jdbcTemplate.queryForObject(sql, args, mapper);
     }
 
-    public void insertObject(String sql, List<Map<String, Object>> paramsList) {
+    public int deleteObject(String sql, Object[] args) {
+        return jdbcTemplate.update(sql, args);
+    }
+
+    public int[] insertObject(String sql, List<Map<String, Object>> paramsList) {
         Map<String,Object>[] paramsArray;
         paramsArray = convertLisToArray(paramsList);
-        namedParameterJdbcTemplate.batchUpdate(sql, paramsArray);
+        return namedParameterJdbcTemplate.batchUpdate(sql, paramsArray);
+    }
+
+    public int[] updateObject(String sql, List<Map<String, Object>> paramsList) {
+        Map<String,Object>[] paramsArray;
+        paramsArray = convertLisToArray(paramsList);
+        return namedParameterJdbcTemplate.batchUpdate(sql, paramsArray);
     }
 
     private Map<String, Object>[] convertLisToArray(List<Map<String, Object>> paramsList) {
