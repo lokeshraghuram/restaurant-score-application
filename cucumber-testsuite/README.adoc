@@ -1,4 +1,4 @@
-== Test suite
+= Test suite
 This application tests the scenarios of restaurant-scoring-service and validates if the functionalities of the service
 are working as expected
 
