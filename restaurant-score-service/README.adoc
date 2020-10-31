@@ -89,10 +89,10 @@ image::src/main/docs/images/jaeger.jpg[Jaeger UI]
 ==== Details of one Trace
 image::src/main/docs/images/Trace1.JPG[Trace]
 
-== Testing Endpoints
+== Test Data
 
 Ensure Authorization header is added before testing. For sample request, refer cucumber-testsuite application.
-Navigate to `src/main/resources/iofiles/feature/F1/S01/request.json`
+Navigate to `src/test/resources/iofiles/feature/F1/S01/request.json`
 
 This request can be used for `POST` and `PUT` methods. For `GET` methods, make sure the correct URL is chosen and parameter
 is passed
