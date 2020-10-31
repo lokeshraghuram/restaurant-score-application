@@ -1,10 +1,7 @@
 package com.nhs.inspection.restaurantscoring.service;
 
 import com.nhs.inspection.restaurantscoring.exception.CustomExceptionHandler;
-import com.nhs.inspection.restaurantscoring.model.Inspection;
-import com.nhs.inspection.restaurantscoring.model.ScoreCard;
-import com.nhs.inspection.restaurantscoring.model.ScoreCardResponse;
-import com.nhs.inspection.restaurantscoring.model.Violation;
+import com.nhs.inspection.restaurantscoring.model.*;
 import com.nhs.inspection.restaurantscoring.model.database.RestaurantData;
 import com.nhs.inspection.restaurantscoring.repository.ScoreCardJdbcRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,22 +9,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class ScoreCardService {
 
     private final ScoreCardJdbcRepository scoreCardJdbcRepository;
+    private final RestaurantStatusService restaurantStatusService;
     private final CustomExceptionHandler customExceptionHandler;
 
     @Autowired
     public ScoreCardService(ScoreCardJdbcRepository scoreCardJdbcRepository,
-                            CustomExceptionHandler customExceptionHandler) {
+                            RestaurantStatusService restaurantStatusService, CustomExceptionHandler customExceptionHandler) {
         this.scoreCardJdbcRepository = scoreCardJdbcRepository;
+        this.restaurantStatusService = restaurantStatusService;
         this.customExceptionHandler = customExceptionHandler;
     }
 
@@ -78,7 +76,8 @@ public class ScoreCardService {
             });
             scoreCardResponse.setInspectionList(inspections);
             return scoreCardResponse;
-        } else customExceptionHandler.throwInternalException("RECORD_NOT_FOUND", "No records found for this business id", HttpStatus.BAD_REQUEST);
+        } else
+            customExceptionHandler.throwInternalException("RECORD_NOT_FOUND", "No records found for this business id", HttpStatus.BAD_REQUEST);
         return null;
     }
 
@@ -134,29 +133,53 @@ public class ScoreCardService {
     }
 
     /** Creates violations in public dataset from the score card published by inspection officer
+     * Update restaurant status asynchronously by using the business id and inspection date that is passed in the request(score card)
      * @param scoreCard ScoreCard
      * @return Number of violations added to public dataset
      */
     public int createScoreCard(ScoreCard scoreCard) {
         validateScoreCard(scoreCard);
-        return scoreCardJdbcRepository.createScoreCard(scoreCard);
+        int recordsInserted = scoreCardJdbcRepository.createScoreCard(scoreCard);
+        LocalDateTime inspectionDate = getInspectionDate(scoreCard);
+        /* Async processing. Child thread will be created at this point. Parent thread will continue its processing
+        without waiting for child thread's completion */
+        restaurantStatusService.updateRestaurantStatus(scoreCard.getBusiness_id(), inspectionDate);
+        return recordsInserted;
+    }
+
+    private LocalDateTime getInspectionDate(ScoreCard scoreCard) {
+        if(Objects.nonNull(scoreCard.getInspections().get(0).getInspection_date()))
+            return scoreCard.getInspections().get(0).getInspection_date();
+        else return LocalDateTime.now(ZoneId.of("UTC"));
     }
 
     /** Update violations in public dataset from the score card published by inspection officer
+     * Update restaurant status asynchronously by using the business id and inspection date that is passed in the request(score card)
      * @param scoreCard ScoreCard
      * @return Number of violations updated in public dataset
      */
     public int updateScoreCard(ScoreCard scoreCard) {
         validateScoreCard(scoreCard);
-        return scoreCardJdbcRepository.updateScoreCard(scoreCard);
+        int recordsUpdated = scoreCardJdbcRepository.updateScoreCard(scoreCard);
+        LocalDateTime inspectionDate = getInspectionDate(scoreCard);
+        /* Async processing. Child thread will be created at this point. Parent thread will continue its processing
+        without waiting for child thread's completion */
+        restaurantStatusService.updateRestaurantStatus(scoreCard.getBusiness_id(), inspectionDate);
+        return recordsUpdated;
     }
 
     /** Delete violation in public dataset that matches the violationId passed in the request
+     * Update restaurant status asynchronously by using the business id of the violation that is passed in the request
+     * Get the latest inspection_date after deleting the violation, check its age and update the status
      * @param violationId Violation Id
      * @return Number of violations deleted in public dataset
      */
     public int deleteViolation(String violationId) {
-        return scoreCardJdbcRepository.deleteViolationScoreCard(violationId);
+        Map<String, String> queryResultMap = scoreCardJdbcRepository.deleteViolationScoreCard(violationId);
+        /* Async processing. Child thread will be created at this point. Parent thread will continue its processing
+        without waiting for child thread's completion */
+        restaurantStatusService.updateRestaurantStatus(queryResultMap.get("businessId"));
+        return Integer.parseInt(queryResultMap.get("deletedEntries"));
     }
 
     /** Delete violation in public dataset that matches the inspectionId passed in the request

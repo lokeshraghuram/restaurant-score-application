@@ -3,6 +3,7 @@ package com.nhs.inspection.restaurantscoring.controller;
 import com.nhs.inspection.restaurantscoring.exception.ErrorInfo;
 import com.nhs.inspection.restaurantscoring.model.ScoreCard;
 import com.nhs.inspection.restaurantscoring.model.ScoreCardResponse;
+import com.nhs.inspection.restaurantscoring.service.RestaurantStatusService;
 import com.nhs.inspection.restaurantscoring.service.ScoreCardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,10 +20,26 @@ import java.util.List;
 @RequestMapping(value = "/restaurant-scoring")
 public class RestaurantScoringRestController {
 
-    ScoreCardService scoreCardService;
+    private final ScoreCardService scoreCardService;
+    private final RestaurantStatusService restaurantStatusService;
 
-    public RestaurantScoringRestController(ScoreCardService scoreCardService) {
+    public RestaurantScoringRestController(ScoreCardService scoreCardService, RestaurantStatusService restaurantStatusService) {
         this.scoreCardService = scoreCardService;
+        this.restaurantStatusService = restaurantStatusService;
+    }
+
+    @Operation(summary = "Get status of restaurant - outdated/active")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Restaurant Inspection Status",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "400", description = "Record not found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorInfo.class)))})
+    @GetMapping(value = "/status/business-id/{businessId}")
+    @PreAuthorize("hasAnyRole('ROLE_INSPECTOR', 'ROLE_PUBLIC')")
+    public String getStatusForBusinessId(@PathVariable("businessId") String businessId) {
+        return restaurantStatusService.getRestaurantStatus(businessId);
     }
 
     @Operation(summary = "Get all inspection results of a business id")
@@ -135,6 +152,6 @@ public class RestaurantScoringRestController {
     @PreAuthorize("hasAuthority('score:write')")
     public String deleteInspection(@PathVariable("inspectionId") String inspectionId) {
         int recordsDeleted = scoreCardService.deleteInspection(inspectionId);
-        return String.valueOf(recordsDeleted) + "violation records are deleted";
+        return recordsDeleted + "violation records are deleted";
     }
 }

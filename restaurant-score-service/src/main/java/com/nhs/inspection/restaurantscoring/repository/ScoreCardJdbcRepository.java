@@ -1,15 +1,16 @@
 package com.nhs.inspection.restaurantscoring.repository;
 
 import com.nhs.inspection.restaurantscoring.exception.CustomExceptionHandler;
+import com.nhs.inspection.restaurantscoring.model.Inspection;
 import com.nhs.inspection.restaurantscoring.model.ScoreCard;
 import com.nhs.inspection.restaurantscoring.model.database.RestaurantData;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
-import java.util.List;
 
 @Repository
 public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
@@ -20,7 +21,7 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
     public ScoreCardJdbcRepository(JdbcTemplate jdbcTemplate,
                                    NamedParameterJdbcTemplate namedParameterJdbcTemplate,
                                    CustomExceptionHandler customExceptionHandler,
-                                   RestaurantDataRowMapper restaurantDataRowMapper) throws SQLException {
+                                   RestaurantDataRowMapper restaurantDataRowMapper) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
         this.customExceptionHandler = customExceptionHandler;
         this.restaurantDataRowMapper = restaurantDataRowMapper;
@@ -75,9 +76,9 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
      * @param scoreCard ScoreCard
      * @return Number of effected entries in database
      */
-    public int createScoreCard(ScoreCard scoreCard){
+    public int createScoreCard(ScoreCard scoreCard) {
         try {
-            return this.insertObject(prepareSqlInsertFromScoreCard(), createNamedParameters(scoreCard)).length;
+            return Arrays.stream(this.insertObject(prepareSqlInsertFromScoreCard(), createNamedParameters(scoreCard))).sum();
         } catch (Exception ex) {
             customExceptionHandler.handleSqlRepositoryExceptions(ex);
         }
@@ -102,7 +103,7 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
                 params.put("inspection_id", inspection.getInspection_id());
                 params.put("inspection_type", inspection.getInspection_type());
                 params.put("inspection_score", inspection.getInspection_score());
-                params.put("inspection_date", inspection.getInspection_date());
+                params.put("inspection_date", getInspectionDate(inspection));
                 params.put("violation_id", violation.getViolation_id());
                 params.put("violation_description", violation.getViolation_description());
                 params.put("risk_category", violation.getRisk_category());
@@ -110,6 +111,12 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
             });
         });
         return paramsList;
+    }
+
+    private LocalDateTime getInspectionDate(Inspection inspection) {
+        if (Objects.nonNull(inspection.getInspection_date()))
+            return inspection.getInspection_date();
+        else return LocalDateTime.now(ZoneId.of("UTC"));
     }
 
     private String prepareSqlInsertFromScoreCard() {
@@ -146,7 +153,7 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
      */
     public int updateScoreCard(ScoreCard scoreCard) {
         try {
-            return this.updateObject(prepareSqlUpdateFromScoreCard(), createNamedParameters(scoreCard)).length;
+            return Arrays.stream(this.updateObject(prepareSqlUpdateFromScoreCard(), createNamedParameters(scoreCard))).sum();
         } catch (Exception ex) {
             customExceptionHandler.handleSqlRepositoryExceptions(ex);
         }
@@ -157,13 +164,18 @@ public class ScoreCardJdbcRepository extends BaseDatabaseRepository {
      * @param violationId Violation Id
      * @return Number of effected entries in database
      */
-    public int deleteViolationScoreCard(String violationId) {
+    public Map<String, String> deleteViolationScoreCard(String violationId) {
         try {
-            return this.deleteObject("delete from inspection.restaurant_data where violation_id = ?",
+            Map<String, String> queryResult = new HashMap<>();
+            int deletedEntries = this.deleteObject("delete from inspection.restaurant_data where violation_id = ?",
                     new Object[]{violationId});
+            queryResult.put("businessId", getScoreCardForViolationId(violationId).getBusiness_id());
+            queryResult.put("deletedRows", String.valueOf(deletedEntries));
+            return queryResult;
+
         } catch (Exception ex) {
             customExceptionHandler.handleSqlRepositoryExceptions(ex);
-            return 0;
+            return Collections.emptyMap();
         }
     }
 

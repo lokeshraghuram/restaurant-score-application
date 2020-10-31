@@ -1,4 +1,4 @@
-package com.nhs.inspection.restaurantscoring.config;
+package com.nhs.inspection.restaurantscoring.config.datasource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

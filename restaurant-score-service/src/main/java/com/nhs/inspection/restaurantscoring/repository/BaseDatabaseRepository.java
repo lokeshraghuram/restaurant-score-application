@@ -23,8 +23,20 @@ public class BaseDatabaseRepository {
         return jdbcTemplate.query(sql, args, mapper);
     }
 
+    protected <T> List<T> queryForList(String sql, RowMapper<T> mapper) {
+        return jdbcTemplate.query(sql, mapper);
+    }
+
     protected <T> T queryForObject(String sql, Object[] args, RowMapper<T> mapper) {
         return jdbcTemplate.queryForObject(sql, args, mapper);
+    }
+
+    protected <T> T queryForObject(String sql, Object[] args, Class<T> requiredType) {
+        return jdbcTemplate.queryForObject(sql, args, requiredType);
+    }
+
+    protected <T> T queryForObject(String sql, RowMapper<T> mapper) {
+        return jdbcTemplate.queryForObject(sql, mapper);
     }
 
     protected int deleteObject(String sql, Object[] args) {
@@ -41,6 +53,10 @@ public class BaseDatabaseRepository {
         Map<String, Object>[] paramsArray;
         paramsArray = convertLisToArray(paramsList);
         return namedParameterJdbcTemplate.batchUpdate(sql, paramsArray);
+    }
+
+    protected int updateObject(String sql, Map<String, Object> params) {
+        return namedParameterJdbcTemplate.update(sql,params);
     }
 
     private Map<String, Object>[] convertLisToArray(List<Map<String, Object>> paramsList) {

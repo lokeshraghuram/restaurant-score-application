@@ -17,4 +17,11 @@ create table inspection.restaurant_data (
 		violation_description varchar(255),
 		risk_category varchar(255),        
         CONSTRAINT PK_Person PRIMARY KEY (business_id,inspection_id,violation_id)
-    )
+    );
+	
+create table inspection.restaurant_status (
+	business_id varchar(255) not null,
+	inspection_date timestamp with time zone,
+	status varchar(255),
+	PRIMARY KEY (business_id)
+);
