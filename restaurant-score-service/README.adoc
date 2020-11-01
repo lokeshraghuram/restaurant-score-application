@@ -22,6 +22,11 @@ image::src/main/docs/images/open-api.JPG[Open Api]
 
 Role based authentication is described in <<Security,security>> section
 
+== Scheduler
+
+Application is configured to perform a task at 01:00 UTC daily to update the status of the restaurant. This is done to
+update the status to "outdated" if the last inspection on that restaurant has crossed 365 days
+
 == Database Schema
 
 Following tables are used.
