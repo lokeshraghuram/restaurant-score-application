@@ -39,3 +39,31 @@ of tokens, I decided to implement Role based Authentication which provides basic
 
 None of the code is directly taken from any source. However for spring-security, jaeger, cucumber & rest-assured, I referred to examples
 in Internet for approach and syntax.
+
+==== Production Readiness
+
+Below enhancements must be made for making this application production ready. If given time and environment with necessary
+softwares, I can implement them
+
+* Create Dockerfile for containerizing the application and kubernetes deployment file for deploying to Kubernetes cluster
+* Create build pipeline in Jenkins
+
+** Maven package
+** Integrate with Sonar for static code analysis
+** Build Docker image and push to Docker Registry
+
+```
+Sample script(untested)
+script {
+tag = "${POMVERSION}.${BUILD_NUMBER}"
+imageName = "${REGISTRY}/${FOLDER}/${pom.artifactId}:${tag}"
+image = docker.build(imageName)
+image.push(tag)
+}
+```
+
+* Create pipeline in Spinnaker/CD tool. Use Kubernetes deployment yaml for deployment with autoscaling configurations
+
+
+
+-
