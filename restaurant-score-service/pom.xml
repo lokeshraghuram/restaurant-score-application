@@ -94,6 +94,12 @@
 			<version>1.2.32</version>
 		</dependency>
 
+		<!-- Spring boot actuator -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+
 		<!-- Tracing Dependencies -->
 		<dependency>
 			<groupId>io.opentracing.contrib</groupId>
