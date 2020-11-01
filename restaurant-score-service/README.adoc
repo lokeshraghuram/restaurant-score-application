@@ -15,7 +15,7 @@ Once pre-requisites are in place, use the IDE of your choice and run the service
 
 == Endpoints
 
-After application is launched, hit the url - http://localhost:8082/swagger-ui/index.html. A window pops up requesting for credentials.
+After application is launched, hit the url - http://localhost:8082/swagger-ui.html. A window pops up requesting for credentials.
 Use "public" as username and password. You should see Open Api definition like below
 
 image::src/main/docs/images/open-api.JPG[Open Api]
